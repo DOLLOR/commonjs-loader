@@ -2,5 +2,7 @@
 Require commonJS modules in browser just like node.js
 
 ```javascript
-var mod = requireCommonJS('./path/to/module.js');
+var mod = commonjsLoader.require('./path/to/module.js');
+//or
+var mod = require('./path/to/module.js');
 ```
