@@ -49,7 +49,7 @@
 	 * @param {String} baseURL the url for the current js file
 	 * @return {(url:String)=>any} the require function for commonJS
 	 */
-	var createRequire = function(baseURL){
+	var createRequire = function createRequire(baseURL){
 		return function(url){
 			if(url.slice(-3) !== '.js'){
 				url = url + '.js';
@@ -60,7 +60,7 @@
 				return moduleList[url];
 			}
 
-			var jsCodes = xhrGet(url);
+			var jsCodes = createRequire.transpile(xhrGet(url));
 			var factory = eval(
 				'(function(require,module,exports){'+
 					jsCodes+
@@ -68,7 +68,7 @@
 			);
 			var module = {
 				exports:{},
-				id:url,
+				id:url
 			};
 
 			factory(createRequire(url),module,module.exports);
@@ -77,5 +77,10 @@
 			return module.exports;
 		};
 	};
+	createRequire.transpile = function(src,url){
+		return src;
+	};
+
 	global.requireCommonJS = createRequire(location.href);
+	if(!global.require) global.require = global.requireCommonJS;
 })(this);
