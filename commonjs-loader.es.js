@@ -24,7 +24,7 @@
 		}
 		// Protocol relative URL
 		if (path.indexOf("//") === 0) {
-			return base.replace(/\/\/.*/, path)
+			return base.replace(/\/\/.*/, path);
 		}
 		// Upper directory
 		if (path.indexOf("../") === 0) {
@@ -61,11 +61,11 @@
 			}
 
 			var jsCodes = xhrGet(url);
-			var factory = eval(`
-				(function(require,module,exports){
-					${jsCodes}
-				});
-			`);
+			var factory = eval(
+				'(function(require,module,exports){'+
+					jsCodes+
+				'});'
+			);
 			var module = {
 				exports:{},
 				id:url,
