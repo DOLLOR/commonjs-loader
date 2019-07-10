@@ -1,4 +1,13 @@
 !(function commonjsLoader(global){
+	var out = {};
+	/**
+	 * @param {String} src source code to be transpiled
+	 * @param {String} url file url for source map
+	 */
+	out.transpile = function(src,url){
+		return src;
+	};
+
 	/**
 	 * get js file with sync XHR
 	 * @param {String} url 
@@ -60,11 +69,12 @@
 				return moduleList[url];
 			}
 
-			var jsCodes = createRequire.transpile(xhrGet(url));
+			var jsCodes = out.transpile(xhrGet(url));
 			var factory = eval(
 				'(function(require,module,exports){'+
 					jsCodes+
-				'});'
+				'});'+
+				'\n//# sourceURL=' + url
 			);
 			var module = {
 				exports:{},
@@ -77,10 +87,11 @@
 			return module.exports;
 		};
 	};
-	createRequire.transpile = function(src,url){
-		return src;
-	};
 
-	global.requireCommonJS = createRequire(location.href);
-	if(!global.require) global.require = global.requireCommonJS;
+	// global require
+	out.require = createRequire(location.href);
+
+	// module exports
+	global.requireCommonJS = out;
+	if(!global.require) global.require = out.require;
 })(this);
