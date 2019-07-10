@@ -69,7 +69,7 @@
 				return moduleList[url];
 			}
 
-			var jsCodes = out.transpile(xhrGet(url));
+			var jsCodes = out.transpile(xhrGet(url),url);
 			var factory = eval(
 				'(function(require,module,exports){'+
 					jsCodes+
