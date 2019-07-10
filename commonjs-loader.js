@@ -71,10 +71,10 @@
 
 			var jsCodes = out.transpile(xhrGet(url),url);
 			jsCodes = 
-				'(function(require,module,exports){'+
-					jsCodes+
-				'\n});'+
-				'\n//# sourceURL=' + url;
+				'(function(require,module,exports){'
+					+jsCodes
+				+'\n});'
+				+'\n//# sourceURL=' + url;
 			var factory = eval(jsCodes);
 			var module = {
 				exports:{},
