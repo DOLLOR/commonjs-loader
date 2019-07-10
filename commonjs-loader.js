@@ -92,6 +92,6 @@
 	out.require = createRequire(location.href);
 
 	// module exports
-	global.requireCommonJS = out;
+	global.commonjsLoader = out;
 	if(!global.require) global.require = out.require;
 })(this);
