@@ -70,12 +70,12 @@
 			}
 
 			var jsCodes = out.transpile(xhrGet(url),url);
-			var factory = eval(
+			jsCodes = 
 				'(function(require,module,exports){'+
 					jsCodes+
-				'});'+
-				'\n//# sourceURL=' + url
-			);
+				'\n});'+
+				'\n//# sourceURL=' + url;
+			var factory = eval(jsCodes);
 			var module = {
 				exports:{},
 				id:url
