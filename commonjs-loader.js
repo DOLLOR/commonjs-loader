@@ -60,6 +60,8 @@
 	 */
 	var createRequire = function createRequire(baseURL){
 		return function(url){
+			var timerStart = +new Date();//timer
+
 			if(url.slice(-3) !== '.js'){
 				url = url + '.js';
 			}
@@ -80,6 +82,8 @@
 				exports:{},
 				id:url
 			};
+
+			console.log(new Date() - timerStart,url);
 
 			factory(createRequire(url),module,module.exports);
 			moduleList[module.id] = module.exports;
