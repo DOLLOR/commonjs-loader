@@ -73,7 +73,7 @@
 
 			var jsCodes = out.transpile(xhrGet(url),url);
 			jsCodes = 
-				'(function(require,module,exports){'
+				'0,(function(require,module,exports){'
 					+jsCodes
 				+'\n});'
 				+'\n//# sourceURL=' + url;
