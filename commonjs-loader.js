@@ -77,7 +77,7 @@
 					+jsCodes
 				+'\n});'
 				+'\n//# sourceURL=' + url;
-			var factory = eval(jsCodes);
+			var factory = global.eval(jsCodes);
 			var module = {
 				exports:{},
 				id:url
