@@ -16,8 +16,39 @@
 	var xhrGet = function(url){
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET',url,false);
-		xhr.send(url);
+		xhr.send(null);
 		return xhr.responseText;
+	};
+
+	var xhrGetAsync = function(url){
+		return new Promise(function(resolve){
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET',url,true);
+			xhr.onload = function(ev){
+				resolve(this.responseText);
+			};
+			xhr.onreadystatechange = function(ev){
+				if(this.readyState!==4) return;
+				resolve(this.responseText);
+			};
+			xhr.send(null);
+		});
+	};
+
+	var codes2module = function(jsCodes,url){
+		var timerStart = +new Date();//timer
+		jsCodes = out.transpile(jsCodes,url);
+		jsCodes = '0,(function(require,module,exports){'+jsCodes+'\n});\n//# sourceURL='+url;
+		var factory = global.eval(jsCodes);
+		var module = {
+			exports:{},
+			id:url
+		};
+		console.log(new Date() - timerStart,url);
+		factory(createRequire(url),module,module.exports);
+		moduleList[module.id] = module.exports;
+
+		return module.exports;
 	};
 
 	/**
@@ -59,37 +90,28 @@
 	 * @return {(url:String)=>any} the require function for commonJS
 	 */
 	var createRequire = function createRequire(baseURL){
-		return function(url){
-			var timerStart = +new Date();//timer
-
-			if(url.slice(-3) !== '.js'){
-				url = url + '.js';
-			}
+		var require = function(url,asyncPromise){
 			url = resolveRelative(url,baseURL);
-
 			if(moduleList.hasOwnProperty(url)){
 				return moduleList[url];
 			}
 
-			var jsCodes = out.transpile(xhrGet(url),url);
-			jsCodes = 
-				'0,(function(require,module,exports){'
-					+jsCodes
-				+'\n});'
-				+'\n//# sourceURL=' + url;
-			var factory = global.eval(jsCodes);
-			var module = {
-				exports:{},
-				id:url
-			};
-
-			console.log(new Date() - timerStart,url);
-
-			factory(createRequire(url),module,module.exports);
-			moduleList[module.id] = module.exports;
-
-			return module.exports;
+			var jsCodes = xhrGet(url);
+			jsCodes = codes2module(jsCodes,url);
+			return jsCodes;
 		};
+		require.async = function(url){
+			url = resolveRelative(url,baseURL);
+			if(moduleList.hasOwnProperty(url)){
+				return moduleList[url];
+			}
+
+			return xhrGetAsync(url).then(function(jsCodes){
+				jsCodes = codes2module(jsCodes,url);
+				return jsCodes;
+			});
+		};
+		return require;
 	};
 
 	// global require
