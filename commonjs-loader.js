@@ -35,6 +35,12 @@
 		});
 	};
 
+	var fillUrl = function(url){
+		return url.slice(-3)==='.js'?
+		url:
+		url+'.js';
+	};
+
 	var codes2module = function(jsCodes,url){
 		var timerStart = +new Date();//timer
 		jsCodes = out.transpile(jsCodes,url);
@@ -92,6 +98,7 @@
 	var createRequire = function createRequire(baseURL){
 		var require = function(url,asyncPromise){
 			url = resolveRelative(url,baseURL);
+			url = fillUrl(url);
 			if(moduleList.hasOwnProperty(url)){
 				return moduleList[url];
 			}
@@ -102,6 +109,7 @@
 		};
 		require.async = function(url){
 			url = resolveRelative(url,baseURL);
+			url = fillUrl(url);
 			if(moduleList.hasOwnProperty(url)){
 				return moduleList[url];
 			}
